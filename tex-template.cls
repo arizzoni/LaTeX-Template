@@ -1,11 +1,12 @@
-\documentclass[12pt, titlepage]{article}
-\newcommand{\theauthor}{Alessandro Rizzoni}
-\newcommand{\thedoctitle}{Python\TeX\ Examples}
-
-\usepackage{hyperref}
+% \NeedsTexFormat{LaTeX2e}
+\ProvidesClass{tex-template}[2024/3/4 engdoc]
+% \DeclareOption{onecolumn}{\OptionNotUsed}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+\ProcessOptions\relax
+\LoadClass{article}
 
 % Code Execution and Typesetting
-\usepackage[%
+\RequirePackage[%
     pygopt={
         style=bw
         },
@@ -25,25 +26,19 @@
     \tiny\rmfamily{\arabic{FancyVerbLine}\,}
     }
 
-% Page Layout
-\usepackage[%
-    letterpaper, % 8.5" x 11" paper size
-    margin=1in
-    ]{geometry}
-
 % Mathematics
-\usepackage{mathtools} % Mathematics typesetting
-\usepackage[% Mathematics with modern fonts
+\RequirePackage{mathtools} % Mathematics typesetting
+\RequirePackage[% Mathematics with modern fonts
     warnings-off={% Turn off default always-on warnings
         mathtools-colon,
         mathtools-overbracket
         }
     ]{unicode-math} 
-\usepackage{lualatex-math} % Math fixes for LuaLaTeX
-\usepackage{siunitx} % Handy typesetting of units
+\RequirePackage{lualatex-math} % Math fixes for LuaLaTeX
+\RequirePackage{siunitx} % Handy typesetting of units
 
 % Font
-\usepackage{fontspec} % Modern .ttc, .ttf, and .otf fonts
+\RequirePackage{fontspec} % Modern .ttc, .ttf, and .otf fonts
 \setmathfont{STIXTwoMath-Regular.otf}
 \setmainfont{STIXTwoText-Regular.otf}[%
     Ligatures=TeX,
@@ -60,16 +55,16 @@
     Scale=MatchLowercase
     ]
 
+% Graphics for plots, etc.
+\RequirePackage{pgf}
+
 % Localization
-\usepackage[% American English localization
-    USenglish
-    ]{babel} 
-\usepackage[% Localized context-sensitive quotes
+\RequirePackage[% Localized context-sensitive quotes
     autostyle=true
     ]{csquotes}
 
 % Headers
-\usepackage{fancyhdr}
+\RequirePackage{fancyhdr}
 \renewcommand{\sectionmark}[1]{\markright{#1}}
 \setlength{\headheight}{24pt}
 \fancypagestyle{fancy}{
@@ -83,29 +78,17 @@
 \pagestyle{fancy}
 
 % Section Title Formatting
-\usepackage{titlesec}
+\RequirePackage{titlesec}
 \titleformat{\section}{\Large\sffamily}{\thesection}{1em}{\Large\sffamily}
 \titleformat{\subsection}{\large\sffamily}{\thesubsection}{1em}{\large\sffamily}
 \titleformat{\subsubsection}{\normalsize\sffamily}{\thesubsubsection}{1em}{\normalsize\sffamily}
 % \AddToHook{cmd/section/before}{\clearpage}
 
 % Table of Contents Formatting
-\usepackage{titletoc}
+\RequirePackage{titletoc}
 \dottedcontents{section}[1em]{}{1em}{0.5em}
 \dottedcontents{subsection}[1em]{}{1em}{0.5em}
 \dottedcontents{subsubsection}[1em]{}{1em}{0.5em}
-
-% Tables and Lists
-\usepackage{tabularray} % Tables and Arrays
-\usepackage{enumitem} % Reformat Enumerated Lists
-
-% Graphics
-\usepackage{pgf} % Base graphics package
-\usepackage{blox} % System block diagrams
-\usepackage{tikz-timing} % Timing diagram graphics
-\usepackage[siunitx]{circuitikz} % Electrical circuit graphics
-\ctikzloadstyle{romano} % Better styling for CircuiTikz
-\tikzset{romano circuit style} % Apply the style
 
 %% Pythontex 
 % Get lengths (in LaTeX points!)
@@ -237,25 +220,7 @@
     \addtocontents{toc}{\protect\thispagestyle{empty}}
 }
 
-\begin{document}
-
-\title{\sffamily\thedoctitle}
-\author{\sffamily\theauthor}
-\date{\sffamily\today}
-\maketitle
-
-\begin{abstract}
-    These are some examples that show the capabilities of Python\TeX. These examples were written using the \Verb{\pyblock} environment - normally the document class will take care of all of this automatically.
-\end{abstract}
-
-\tableofcontents
-\clearpage
-
-\section{Python Environment}
-
-The first example covers the python environment that we will use for this document. It's pretty simple! All we need for the first few examples is \Verb{numpy} and \Verb{matplotlib}. We can also use one of \Verb{matplotlib}'s dependencies, \Verb{cycler}, to save some time.
-
-\begin{pyblock}
+\begin{pythontexcustomcode}{py}
 import os
 
 import numpy as np # Python numerical computing library
@@ -282,13 +247,6 @@ class Environment():
 
 environment = Environment()
 
-\end{pyblock}
-
-\section{Utility Functions}
-
-Example \thesection\ contains some functions that will be useful later on. The \Verb{metallic_ratio()} function returns the ``metallic ratio'' of a numeric argument, and the \Verb{eng_format()} function returns an \Verb{EngFormatter} object that is used to generate the engineering format plot ticks that are used later on. Information on the metallic ratio, or mean, can be found here: \url{https://en.wikipedia.org/wiki/Metallic_mean}.
-
-\begin{pyblock}
 def metallic_ratio(n):
     return 0.5 * ( n + np.sqrt(n**2 + 4) )
     
@@ -300,14 +258,6 @@ def save_pythontex_figure(figure, figure_name):
         figure.savefig(os.path.join(environment.pgf_directory, f'{figure_name}.pgf'))
         figure.savefig(os.path.join(environment.pdf_directory, f'{figure_name}.pdf'))
     return figure
-
-\end{pyblock}
-
-\section{Geometry Class}
-
-Example \thesection\ starts to get to the good stuff - here we are starting to interact with the Python context we generated in the preamble to pull variables from \LaTeX\ into our Python environment. The \Verb{pytex.context} dictionary holds all of the values, etc. that we pass to Python, and we can access them as follows. Some additional sanitization and conditioning is required to give a plain string and convert from \LaTeX\ points to inches. the three values we will start off with are the column width, the text width, and the text height. They are generally described as they are named, but the text height and the column height are not necessarily the same, such as in a multiple column document.
-
-\begin{pyblock}
 
 class Geometry():
 
@@ -331,14 +281,6 @@ class Geometry():
     axis_dimensions = (0, 0, 1, 1) # 0 lr margin, 0 tb margin, 100% figure size
 
 geometry = Geometry()
-
-\end{pyblock}
-
-\section{Font Class}
-
-Here we pull the fonts from the \LaTeX\ document so we can use them in our \Verb{matplotlib} plots and have a consistently formatted document. The font names are taken from the context dictionary and sanitized as before. After the typefaces have been transferred, the font sizes can be taken. The font sizes are taken from the default \LaTeX\ font sizes - other sizes can be added or the base font commands can be patched if desired. The class is declared to allow for dot notation. Eventually, there may be a need for additional font configuration code, and having a class interface in place will simplify expansion later on.
-
-\begin{pyblock}
 
 # Determine font parameters
 class Font():
@@ -365,14 +307,6 @@ class Font():
 
 font = Font() # Instantiate the class for use
 
-\end{pyblock}
-
-\section{Plot Settings}
-
-Example \thesection\ configures various options for the plots. The figure geometry is defined first, then the colormap is selected. The \Verb{grey} colorscheme was chosen to keep the document in black and white. Once the colormap and the number of styles are selected, a \Verb{cycler} is created to iterate over the different color and dash styles.
-
-\begin{pyblock}
-
 # figure settings
 cmap = plt.get_cmap('grey') # Select colormap
 num_plot_styles = 4 # number of colors for plotting
@@ -386,14 +320,6 @@ for i in range(num_plot_styles): # Populate the color and style lists
 
 # Define the main cycler with the two component lists 
 style_cycler = cycler(color=plot_colors, linestyle=line_styles)
-
-\end{pyblock}
-
-\section{Matplotlib Configuration}
-
-This example is interesting - the \Verb{matplotlib} rcparams can be modified for the active Python evironment. The more interesting feature is the PGF backend which allows for the output image to be produced as directly importable \LaTeX\ code with the \Verb{pgf} package. The backend allows for a \LaTeX\ preamble to be defined, and this feature is used here to create a unified plot style with the same font as the rest of the document. Other fonts are available in the Python environment - any font you define in the normal \LaTeX\ ways, such as by importing a package, using \Verb{fontspec} or \Verb{fontsetup}, etc.
-
-\begin{pyblock}
 
 # Document-wide Matplotlib Configuration
 rc.update({
@@ -442,76 +368,9 @@ rc.update({
         'pgf.texsystem': 'lualatex', # default is xetex, but lualatex is preferred
 })
 
-\end{pyblock}
+\end{pythontexcustomcode}
 
-\section{Example Plot}
-
-This example shows a few different things that are possible. First, a plot can be generated with plot size and other parameters passed to Python from \LaTeX. The example also shows the utility provided by the use of the Matplotlib PGF backend's \LaTeX\ preamble, which was defined in the Matplotlib configuration code. This allows the package \texttt{siunitx} to be loaded inside Matplotlib so that mathematics and physical units can be properly typeset using \LaTeX.
-
-\begin{pyblock}
-
-fig, ax = plt.subplots()
-
-x = np.linspace(0, 1, 1000)
-for frequency in range(1, num_plot_styles + 1, 1):
-    _ = ax.plot(
-	x,
-	np.sin(2*np.pi*frequency*x),
-        label=r'\SI{%.1f}{\hertz}' % frequency
-        )
-
-ax.xaxis.set_major_formatter(
-    eng_format(r'\unit{\second}')
-    )
-
-ax.yaxis.set_major_formatter(
-    eng_format(r'\unit{\volt}')
-    )
-
-_ = ax.legend()
-
-figure_name = 'example_figure'
-save_pythontex_figure(fig, figure_name)
-
-\end{pyblock}
-
-\begin{figure}[h!]
-\input{../figures/pgf/example_figure.pgf}
-\caption{Example \thesection\ Plot}
-\end{figure}
-
-\section{Font Example}
-
-Example \thesection\ shows the basics of how to use the font class.
-
-\begin{pyblock}
-
-print(font.roman, font.math, font.sans, font.mono)
-
-\end{pyblock}
-
-\begin{figure}[h!]
-    \begin{center}
-        \ttfamily\printpythontex
-    \end{center}
-\caption{Example \thesection\ Output}
-\end{figure}
-
-\section{Geometry Example}
-
-In this example, we show how to interact with the geometry class.
-
-\begin{pyblock}
-
-print(geometry.em_length, geometry.ex_length, geometry.in_length, geometry.cm_length)
-
-\end{pyblock}
-
-\begin{figure}[h!]
-    \begin{center}
-        \ttfamily\printpythontex
-    \end{center}
-\caption{Example \thesection\ Output}
-\end{figure}
-
-\end{document}
+\AtBeginDocument{
+    \renewcommand{\abstractname}{Introduction}
+    \addtocontents{toc}{\protect\thispagestyle{empty}}
+}
