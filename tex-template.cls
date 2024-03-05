@@ -55,7 +55,7 @@
     Scale=MatchLowercase
     ]
 
-% Graphics
+% Graphics for plots, etc.
 \RequirePackage{pgf}
 
 % Localization
