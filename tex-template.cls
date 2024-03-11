@@ -1,10 +1,10 @@
-% \NeedsTexFormat{LaTeX2e}
-\ProvidesClass{tex-template}[2024/3/4 engdoc]
+\NeedsTeXFormat{LaTeX2e}
+\LoadClass{article}
+\ProvidesClass{tex-template}
 % \DeclareOption{onecolumn}{\OptionNotUsed}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
-\LoadClass{article}
-
+\setcounter{errorcontextlines}{999}
 % Code Execution and Typesetting
 \RequirePackage[%
     pygopt={
@@ -213,11 +213,6 @@
     bp=\the\bplength,
     dd=\the\ddlength,
     pc=\the\pclength
-}
-
-\AtBeginDocument{
-    \renewcommand{\abstractname}{Introduction}
-    \addtocontents{toc}{\protect\thispagestyle{empty}}
 }
 
 \begin{pythontexcustomcode}{py}
