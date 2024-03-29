@@ -260,7 +260,7 @@ class Geometry():
     column_width = float(pytex.context['columnwidth'][:-2]) / 72.27
     text_width = float(pytex.context['textwidth'][:-2]) / 72.27
     text_height = float(pytex.context['textheight'][:-2]) / 72.27
-    figure_width = 0.9 * column_width - 2 * em_length
+    figure_width = column_width - 2 * em_length
     figure_height = figure_width / metallic_ratio(1) # Define figure height as a function of the figure width and the golden ratio
 
     axis_dimensions = (0, 0, 1, 1) # 0 lr margin, 0 tb margin, 100% figure size
