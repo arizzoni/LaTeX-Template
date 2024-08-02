@@ -1,7 +1,7 @@
 \documentclass[12pt, titlepage]{tex-template}
 
-\newcommand{\theauthor}{Alessandro Rizzoni}
 \newcommand{\thedoctitle}{\LaTeX\ Template}
+
 
 % Page Layout
 \usepackage[%
@@ -17,8 +17,8 @@
 \begin{document}
 
 \title{\sffamily\thedoctitle}
-\author{\sffamily\theauthor}
-\date{\sffamily\today}
+\author{\sffamily\gitAuthorName\\\sffamily\gitAuthorEmail}
+\date{\sffamily\gitAuthorDate}
 \maketitle
 
 \begin{abstract}
@@ -63,5 +63,7 @@ save_pythontex_figure(fig, figure_name)
 \input{../figures/pgf/example_figure.pgf}
 \caption{Example \thesection\ Plot}
 \end{figure}
+
+
 
 \end{document}
