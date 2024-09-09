@@ -479,7 +479,7 @@ rc.update({
     }
     \pagestyle{fancy}
 
-    \title{\textsf{\textbf{Baseboard\\Design Reference Document}}}
+    \title{\textsf{\textbf{\thedoctitle}}}
     \author{\textsf{\gitAuthorName\ \gitAuthorEmail}}
     \date{\textsf{\gitAuthorDate}}
 }
